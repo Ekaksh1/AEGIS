@@ -4,65 +4,106 @@ This file provides guidance to WARP (warp.dev) when working with code in this re
 
 ## Project Overview
 
-AEGIS is a Python 3.13 project. The codebase is currently in early stages of development.
+AEGIS is a Python 3.13 project using [uv](https://github.com/astral-sh/uv) for fast, reliable package management.
 
 ## Development Environment
 
-### Virtual Environment
-- Python virtual environment located in `venv/`
-- Activate: `.\venv\Scripts\Activate.ps1` (PowerShell) or `.\venv\Scripts\activate.bat` (CMD)
-- Deactivate: `deactivate`
+### Setup
+
+**First-time setup:**
+```powershell
+# Install uv (if not already installed)
+powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+
+# Add uv to PATH for current session
+$env:Path = "C:\Users\$env:USERNAME\.local\bin;$env:Path"
+
+# Install dependencies
+uv sync --group dev
+```
 
 ### Common Commands
 
 **Package Management:**
 ```powershell
-# Install dependencies (when requirements.txt exists)
-pip install -r requirements.txt
+# Sync dependencies (install/update)
+uv sync
 
-# Install package in development mode (when setup.py/pyproject.toml exists)
-pip install -e .
+# Install with dev dependencies
+uv sync --group dev
 
-# Freeze current dependencies
-pip freeze > requirements.txt
+# Add a new dependency
+uv add <package-name>
+
+# Add a dev dependency
+uv add --group dev <package-name>
+
+# Remove a dependency
+uv remove <package-name>
+```
+
+**Running the Application:**
+```powershell
+# Run the main application
+uv run aegis
+
+# Run any Python script
+uv run python src/aegis/main.py
 ```
 
 **Testing:**
 ```powershell
-# Run tests with pytest (when implemented)
-pytest
+# Run all tests
+uv run pytest
 
 # Run specific test file
-pytest tests/test_filename.py
+uv run pytest tests/test_main.py
 
 # Run with coverage
-pytest --cov=. --cov-report=html
+uv run pytest --cov=aegis --cov-report=html
+
+# Run tests in watch mode (if pytest-watch is installed)
+uv run ptw
 ```
 
 **Code Quality:**
 ```powershell
 # Format code with black (when configured)
-black .
+uv run black src/ tests/
 
-# Lint with flake8 or ruff (when configured)
-flake8 .
-ruff check .
+# Lint with ruff (when configured)
+uv run ruff check src/ tests/
 
 # Type checking with mypy (when configured)
-mypy .
+uv run mypy src/
 ```
 
 ## Project Structure
 
-As the project grows, typical structure will include:
-- Source code in root or `src/` directory
-- Tests in `tests/` directory
-- Configuration files in root
-- Documentation in `docs/` directory
+```
+AEGIS/
+├── src/
+│   └── aegis/         # Main application package
+│       ├── __init__.py
+│       └── main.py
+├── tests/             # Test files
+│   └── test_main.py
+├── .venv/             # Virtual environment (managed by uv)
+├── pyproject.toml     # Project configuration and dependencies
+├── .python-version    # Python version specification (3.13)
+├── uv.lock            # Locked dependency versions
+├── .gitignore
+├── AGENTS.md
+├── LICENSE
+└── README.md
+```
 
 ## Development Guidelines
 
 - Python 3.13 is the target version
-- Use virtual environment for all development
-- Follow PEP 8 style guidelines (enforced by formatter when configured)
+- Use `uv` for all package management (not pip)
+- All source code goes in `src/aegis/`
+- All tests go in `tests/`
+- Use `uv run` prefix for running commands to ensure correct environment
+- Follow PEP 8 style guidelines
 - Write tests for new functionality
