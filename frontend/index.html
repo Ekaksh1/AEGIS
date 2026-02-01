@@ -1,21 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AEGIS - Power Analysis Simulation</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
     <header>
         <div class="container">
             <nav>
                 <div class="logo">⚡ AEGIS</div>
                 <ul class="nav-links">
-                    <li><a href="home.html">Home</a></li>
-                    <li><a href="about.html">About</a></li>
-                    <li><a href="simulations.html">Simulations</a></li>
-                    <li><a href="index.html">Stats</a></li>
+                    <li><a onclick="navigateTo('home')" id="nav-home" class="active">Home</a></li>
+                    <li><a onclick="navigateTo('about')" id="nav-about">About</a></li>
+                    <li><a onclick="navigateTo('simulations')" id="nav-simulations">Simulations</a></li>
+                    <li><a onclick="navigateTo('stats')" id="nav-stats">Stats</a></li>
                 </ul>
             </nav>
         </div>
@@ -23,57 +25,167 @@
 
     <main>
         <div class="container">
-            <!-- Stats Section -->
-            <section class="stats">
-                <div class="stat-item">
-                    <h3>100+</h3>
-                    <p>Data Samples</p>
+
+            <!-- HOME SECTION -->
+            <section id="home" class="page-section active">
+                <div class="hero">
+                    <h1>AEGIS Power Analysis Platform</h1>
+                    <p>Advanced simulation and visualization of power consumption based on Hamming weight analysis.</p>
+                    <button onclick="navigateTo('simulations')" class="cta-button">Run Simulation</button>
                 </div>
-                <div class="stat-item">
-                    <h3>8-bit</h3>
-                    <p>Bus Width</p>
-                </div>
-                <div class="stat-item">
-                    <h3>JSON</h3>
-                    <p>Export Format</p>
-                </div>
-                <div class="stat-item">
-                    <h3>Real-time</h3>
-                    <p>Processing</p>
+
+                <div class="stats" style="margin-top: 3rem;">
+                    <div class="stat-item">
+                        <h3>100+</h3>
+                        <p>Algorithm Modes</p>
+                    </div>
+                    <div class="stat-item">
+                        <h3>8-bit</h3>
+                        <p>Bus Width</p>
+                    </div>
+                    <div class="stat-item">
+                        <h3>JSON</h3>
+                        <p>Export Format</p>
+                    </div>
                 </div>
             </section>
 
-            <!-- Info Section -->
-            <section class="info">
-                <h2>How It Works</h2>
-                <div class="steps">
-                    <div class="step">
-                        <span class="step-number">1</span>
-                        <h3>Run Simulation</h3>
-                        <p>Execute the power simulation engine to process data sequences.</p>
+            <!-- ABOUT SECTION -->
+            <section id="about" class="about page-section">
+                <h2>What is AEGIS?</h2>
+                <div class="about-content">
+                    <div class="about-card">
+                        <h3>🔍 Analysis</h3>
+                        <p>Sophisticated power consumption analysis using Hamming weight and bit transitions metrics.
+                        </p>
                     </div>
-                    <div class="step">
-                        <span class="step-number">2</span>
-                        <h3>Analyze Results</h3>
-                        <p>View comprehensive statistics and power consumption patterns.</p>
+                    <div class="about-card">
+                        <h3>📊 Simulation</h3>
+                        <p>Run simulations on data sequences to understand power behavior patterns.</p>
                     </div>
-                    <div class="step">
-                        <span class="step-number">3</span>
-                        <h3>Export Data</h3>
-                        <p>Download results as JSON files with timestamps for tracking.</p>
+                    <div class="about-card">
+                        <h3>📈 Visualization</h3>
+                        <p>Beautiful charts and graphs to visualize power traces and correlations.</p>
                     </div>
                 </div>
             </section>
+
+            <!-- SIMULATIONS SECTION -->
+            <section id="simulations" class="simulations page-section">
+                <h2>Power Analysis Simulator</h2>
+
+                <div class="simulations-grid">
+                    <div class="simulation-card">
+                        <h3>Specific Sequence Analysis</h3>
+                        <p>Generate random data or use AI to create specific test patterns.</p>
+
+                        <div class="demo-panel">
+                            <!-- Standard Controls -->
+                            <div class="demo-controls">
+                                <label for="sample-count">Samples:</label>
+                                <input type="number" id="sample-count" value="10" min="1" max="50">
+                                <button onclick="runHammingSimulation()" class="cta-button">Random Execute</button>
+                            </div>
+
+                            <!-- AI Controls -->
+                            <div class="ai-controls">
+                                <label style="color: var(--ai-color); font-weight: 600;">✨ AI Scenario Generator</label>
+                                <div class="ai-input-group">
+                                    <input type="text" id="ai-scenario-input"
+                                        placeholder="E.g., 'Ramp up from 0 to 255' or 'Alternate high/low power'">
+                                    <button onclick="generateAIScenario()" class="cta-button ai-button"
+                                        id="btn-ai-gen">Generate & Run</button>
+                                </div>
+                                <div id="ai-error"
+                                    style="color: #ff6b6b; font-size: 0.8rem; margin-top: 0.5rem; display: none;"></div>
+                            </div>
+
+                            <!-- Output Area -->
+                            <div id="simulation-output" style="margin-top: 1.5rem;">
+                                <p style="color: #888; font-style: italic;">Ready to simulate...</p>
+                            </div>
+
+                            <!-- AI Analysis Button (Hidden until results exist) -->
+                            <div id="analysis-actions"
+                                style="display: none; margin-top: 1rem; border-top: 1px solid #444; padding-top: 1rem;">
+                                <button onclick="analyzeResults()" class="cta-button ai-button" style="width: 100%;"
+                                    id="btn-ai-analyze">✨ Analyze Power Trace</button>
+
+                                <div id="ai-analysis-result" class="analysis-box">
+                                    <h4>✨ Gemini Analysis</h4>
+                                    <p id="analysis-text">Loading...</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="simulation-card">
+                        <h3>Configuration</h3>
+                        <p>Adjust the hypothetical power consumption parameters.</p>
+                        <div class="demo-controls"
+                            style="margin-top: 1rem; flex-direction: column; align-items: flex-start;">
+                            <label>Base Voltage (V): <input type="number" value="3.3" disabled></label>
+                            <label>Leakage Current (uA): <input type="number" value="10" disabled></label>
+                        </div>
+                        <div class="card-tags">
+                            <span class="tag">Configurable</span>
+                            <span class="tag">Real-time</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- STATS SECTION (Formerly Index.html) -->
+            <section id="stats" class="page-section">
+                <div class="info">
+                    <h2>Workflow Statistics</h2>
+                    <div class="stats">
+                        <div class="stat-item">
+                            <h3 id="total-sims">0</h3>
+                            <p>Simulations Run</p>
+                        </div>
+                        <div class="stat-item">
+                            <h3>Real-time</h3>
+                            <p>Processing Mode</p>
+                        </div>
+                        <div class="stat-item">
+                            <h3>HW/HD</h3>
+                            <p>Metrics</p>
+                        </div>
+                    </div>
+
+                    <h2>How It Works</h2>
+                    <div class="steps">
+                        <div class="step">
+                            <span class="step-number">1</span>
+                            <h3>Generate Data</h3>
+                            <p>Random 8-bit integers are generated to simulate bus traffic.</p>
+                        </div>
+                        <div class="step">
+                            <span class="step-number">2</span>
+                            <h3>Calc Hamming Weight</h3>
+                            <p>The number of set bits (1s) is counted for each byte.</p>
+                        </div>
+                        <div class="step">
+                            <span class="step-number">3</span>
+                            <h3>Estimate Power</h3>
+                            <p>Power consumption is proportional to the Hamming Weight.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
         </div>
     </main>
 
     <footer>
         <div class="container">
             <p>&copy; 2026 AEGIS. Advanced Energy and power analysis for integrated systems.</p>
-            <p>Powered by Python • Hamming Weight Analysis • Real-time Simulation</p>
+            <p>Powered by JavaScript • Hamming Weight Analysis • Real-time Simulation</p>
         </div>
     </footer>
 
     <script src="script.js"></script>
 </body>
+
 </html>
